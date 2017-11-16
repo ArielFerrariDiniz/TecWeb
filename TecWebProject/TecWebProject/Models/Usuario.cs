@@ -24,6 +24,8 @@ namespace TecWebProject.Models
         public DbSet<Usuario> Usuarios { get; set; }
 
         public DbSet<Catalogo> Catalogos { get; set; }
+
+        public DbSet<Site> Sites { get; set; }
     }
 }
 
