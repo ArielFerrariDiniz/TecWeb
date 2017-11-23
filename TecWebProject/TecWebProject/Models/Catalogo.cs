@@ -9,6 +9,7 @@ namespace TecWebProject.Models
     {
         public int Id { get; set; }
         public string Nome { get; set; }
+        public string Categoria { get; set; }
         public virtual Usuario Usuario { get; set; }
 
         public List<Site> Sites = new List<Site>();
