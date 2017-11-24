@@ -44,8 +44,7 @@ namespace TecWebProject.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
-            ViewBag.ReturnUrl = returnUrl;
-            return View();
+            return RedirectToAction("LogIn", "Usuarios");
         }
 
         //
@@ -61,7 +60,7 @@ namespace TecWebProject.Controllers
                 if (user != null)
                 {
                     await SignInAsync(user, model.RememberMe);
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {
@@ -78,7 +77,7 @@ namespace TecWebProject.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
-            return View();
+            return RedirectToAction("Create", "Usuarios");
         }
 
         //

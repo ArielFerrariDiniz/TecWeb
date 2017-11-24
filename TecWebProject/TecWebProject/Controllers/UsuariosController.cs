@@ -52,7 +52,7 @@ namespace TecWebProject.Controllers
             {
                 db.Usuarios.Add(usuario);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
             return View(usuario);
         }
@@ -121,6 +121,33 @@ namespace TecWebProject.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        // GET: Usuarios/Create
+        public ActionResult LogIn()
+        {
+            return View();
+        }
+
+        // POST: Usuarios/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LogIn(string email, string senha/*[Bind(Include = "Senha,Email")] Usuario usuario*/)
+        {
+            if (ModelState.IsValid)
+            {
+                var usu = (from u in db.Usuarios
+                           where u.Email == email &&
+                           u.Senha == senha
+                           select u).FirstOrDefault();
+                if (usu != null)
+                    return RedirectToAction("Index", "Home");
+            }
+            return View();
+
+
         }
     }
 }

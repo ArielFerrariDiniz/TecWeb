@@ -244,6 +244,7 @@
     <Content Include="Views\Sites\Details.cshtml" />
     <Content Include="Views\Sites\Edit.cshtml" />
     <Content Include="Views\Sites\Index.cshtml" />
+    <Content Include="Views\Usuarios\LogIn.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
