@@ -17,6 +17,10 @@ namespace TecWebProject.Controllers
         // GET: Catalogos
         public ActionResult Index()
         {
+            if (Session["User"] == null)
+            {
+                return RedirectToAction("Index", "Home" );
+            }
             return View(db.Catalogos.ToList());
         }
 
@@ -38,6 +42,10 @@ namespace TecWebProject.Controllers
         // GET: Catalogos/Create
         public ActionResult Create()
         {
+            if (Session["User"] == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
@@ -48,6 +56,10 @@ namespace TecWebProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Nome,Categoria")] Catalogo catalogo)
         {
+            if (Session["User"] == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (ModelState.IsValid)
             {
                 db.Catalogos.Add(catalogo);
@@ -61,6 +73,10 @@ namespace TecWebProject.Controllers
         // GET: Catalogos/Edit/5
         public ActionResult Edit(int? id)
         {
+            if (Session["User"] == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -80,6 +96,10 @@ namespace TecWebProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Nome,Categoria")] Catalogo catalogo)
         {
+            if (Session["User"] == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (ModelState.IsValid)
             {
                 db.Entry(catalogo).State = EntityState.Modified;
@@ -92,6 +112,10 @@ namespace TecWebProject.Controllers
         // GET: Catalogos/Delete/5
         public ActionResult Delete(int? id)
         {
+            if (Session["User"] == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -109,6 +133,10 @@ namespace TecWebProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            if (Session["User"] == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             Catalogo catalogo = db.Catalogos.Find(id);
             db.Catalogos.Remove(catalogo);
             db.SaveChanges();

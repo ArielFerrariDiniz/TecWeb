@@ -41,9 +41,9 @@ namespace TecWebProject.Controllers
             return View();
         }
 
-        // POST: Usuarios/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+         //POST: Usuarios/Create
+         //To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+         //more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Nome,Senha,Email")] Usuario usuario)
@@ -143,11 +143,12 @@ namespace TecWebProject.Controllers
                            u.Senha == senha
                            select u).FirstOrDefault();
                 if (usu != null)
+                {
+                    Session["User"] = usu;
                     return RedirectToAction("Index", "Home");
+                }
             }
             return View();
-
-
         }
     }
 }
