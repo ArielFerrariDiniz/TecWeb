@@ -52,7 +52,7 @@ namespace TecWebProject.Controllers
             {
                 db.Usuarios.Add(usuario);
                 db.SaveChanges();
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("LogIn", "Usuarios");
             }
             return View(usuario);
         }

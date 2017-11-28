@@ -19,7 +19,7 @@ namespace TecWebProject.Controllers
         {
             if (Session["User"] == null)
             {
-                return RedirectToAction("Index", "Home" );
+                return RedirectToAction("LogIn", "Usuarios" );
             }
             return View(db.Catalogos.ToList());
         }
@@ -27,6 +27,10 @@ namespace TecWebProject.Controllers
         // GET: Catalogos/Details/5
         public ActionResult Details(int? id)
         {
+            if (Session["User"] == null)
+            {
+                return RedirectToAction("LogIn", "Usuarios");
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -44,7 +48,7 @@ namespace TecWebProject.Controllers
         {
             if (Session["User"] == null)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("LogIn", "Usuarios");
             }
             return View();
         }
@@ -58,10 +62,11 @@ namespace TecWebProject.Controllers
         {
             if (Session["User"] == null)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("LogIn", "Usuarios");
             }
             if (ModelState.IsValid)
             {
+                catalogo.Usuario = (Usuario)Session["User"];
                 db.Catalogos.Add(catalogo);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -73,9 +78,17 @@ namespace TecWebProject.Controllers
         // GET: Catalogos/Edit/5
         public ActionResult Edit(int? id)
         {
+            var c = (from u in db.Catalogos
+                           where u.Id == id
+                           select u).FirstOrDefault();
+            Usuario usu = (Usuario)Session["User"];
             if (Session["User"] == null)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("LogIn", "Usuarios");
+            }
+            if (usu.Id != c.Usuario.Id)
+            {
+                return RedirectToAction("Index", "Catalogos");
             }
             if (id == null)
             {
@@ -98,7 +111,7 @@ namespace TecWebProject.Controllers
         {
             if (Session["User"] == null)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("LogIn", "Usuarios");
             }
             if (ModelState.IsValid)
             {
@@ -114,7 +127,7 @@ namespace TecWebProject.Controllers
         {
             if (Session["User"] == null)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("LogIn", "Usuarios");
             }
             if (id == null)
             {
@@ -135,7 +148,7 @@ namespace TecWebProject.Controllers
         {
             if (Session["User"] == null)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("LogIn", "Usuarios" );
             }
             Catalogo catalogo = db.Catalogos.Find(id);
             db.Catalogos.Remove(catalogo);

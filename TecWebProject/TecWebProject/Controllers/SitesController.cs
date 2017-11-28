@@ -17,12 +17,20 @@ namespace TecWebProject.Controllers
         // GET: Sites
         public ActionResult Index()
         {
+            if (Session["User"] == null)
+            {
+                return RedirectToAction("LogIn", "Usuarios");
+            }
             return View(db.Sites.ToList());
         }
 
         // GET: Sites/Details/5
         public ActionResult Details(int? id)
         {
+            if (Session["User"] == null)
+            {
+                return RedirectToAction("LogIn", "Usuarios");
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -38,6 +46,10 @@ namespace TecWebProject.Controllers
         // GET: Sites/Create
         public ActionResult Create()
         {
+            if (Session["User"] == null)
+            {
+                return RedirectToAction("LogIn", "Usuarios");
+            }
             return View();
         }
 
@@ -48,6 +60,10 @@ namespace TecWebProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Nome,Acesso,Link")] Site site)
         {
+            if (Session["User"] == null)
+            {
+                return RedirectToAction("LogIn", "Usuarios");
+            }
             if (ModelState.IsValid)
             {
                 db.Sites.Add(site);
@@ -61,6 +77,10 @@ namespace TecWebProject.Controllers
         // GET: Sites/Edit/5
         public ActionResult Edit(int? id)
         {
+            if (Session["User"] == null)
+            {
+                return RedirectToAction("LogIn", "Usuarios");
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -80,6 +100,10 @@ namespace TecWebProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Nome,Acesso,Link")] Site site)
         {
+            if (Session["User"] == null)
+            {
+                return RedirectToAction("LogIn", "Usuarios");
+            }
             if (ModelState.IsValid)
             {
                 db.Entry(site).State = EntityState.Modified;
@@ -92,6 +116,10 @@ namespace TecWebProject.Controllers
         // GET: Sites/Delete/5
         public ActionResult Delete(int? id)
         {
+            if (Session["User"] == null)
+            {
+                return RedirectToAction("LogIn", "Usuarios");
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -109,6 +137,10 @@ namespace TecWebProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            if (Session["User"] == null)
+            {
+                return RedirectToAction("LogIn", "Usuarios");
+            }
             Site site = db.Sites.Find(id);
             db.Sites.Remove(site);
             db.SaveChanges();
