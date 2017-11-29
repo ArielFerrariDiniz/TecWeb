@@ -4,21 +4,36 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Catalogs</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 <table class="table">
+    @using (Html.BeginForm())
+    {
+        <tr>
+            <th>
+                Nome: @Html.TextBox("nome", (string)ViewBag.Filtro)
+            </th>
+            <th>
+                Categoria: @Html.TextBox("categoria", (string)ViewBag.Filtro)
+            </th>
+            <th>
+                Usuario: @Html.TextBox("usuario", (string)ViewBag.Filtro)
+                <input type="submit" value="Filtrar" />
+            </th>
+        </tr>
+    }
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Nome)
+            @Html.ActionLink("Nome", "Index", new { ordenar = ViewBag.OrdenarNome, nome = ViewBag.Filtro })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Categoria)
+            @Html.ActionLink("Categoria", "Index", new { ordenar = ViewBag.OrdenarSobrenome, nome = ViewBag.Filtro })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Usuario)
+            @Html.ActionLink("Usuario", "Index", new { ordenar = ViewBag.OrdenarUsuario, nome = ViewBag.Filtro })
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Sites)
         </th>
         <th></th>
     </tr>
@@ -35,8 +50,10 @@
             @Html.DisplayFor(modelItem => item.Usuario.Nome)
         </td>
         <td>
+            @*@Html.DisplayFor(modelItem => item.Sites.Nome)*@
+        </td>
+        <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
             @Html.ActionLink("Delete", "Delete", new { id=item.Id })
         </td>
     </tr>

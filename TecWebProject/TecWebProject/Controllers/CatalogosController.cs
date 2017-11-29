@@ -15,13 +15,88 @@ namespace TecWebProject.Controllers
         private FilmesDbContext db = new FilmesDbContext();
 
         // GET: Catalogos
-        public ActionResult Index()
+        public ActionResult Index(string nome, string categoria, string usuario, string ordenar)
         {
             if (Session["User"] == null)
             {
                 return RedirectToAction("LogIn", "Usuarios" );
             }
-            return View(db.Catalogos.ToList());
+            var catalogos = from c in db.Catalogos
+                            select c;
+            if (nome != null && nome != "")
+            {
+                catalogos = from c in db.Catalogos
+                                where c.Nome.Contains(nome)
+                                select c;
+                ViewBag.Filtro = nome;
+            }
+            else if (categoria != null && categoria != "")
+            {
+                catalogos = from c in db.Catalogos
+                                where c.Categoria.Contains(categoria)
+                                select c;
+                ViewBag.Filtro = categoria;
+            }
+            else if (usuario != null && usuario != "")
+            {
+                catalogos = from c in db.Catalogos
+                                where c.Usuario.Nome.Contains(usuario)
+                                select c;
+                ViewBag.Filtro = usuario;
+            }
+            if (String.IsNullOrEmpty(ordenar))
+            {
+                ViewBag.OrdenarNome = "nome";
+                ViewBag.OrdenarSobrenome = "categoria";
+                ViewBag.OrdenarUsuario = "usuario";
+            }
+            else
+            {
+                if (ordenar == "nome")
+                {
+                    catalogos = catalogos.OrderBy(a => a.Nome);
+                    ViewBag.OrdenarNome = "nome_desc";
+                    ViewBag.OrdenarSobrenome = "categoria";
+                    ViewBag.OrdenarUsuario = "usuario";
+                }
+                else if (ordenar == "nome_desc")
+                {
+                    catalogos = catalogos.OrderByDescending(a => a.Nome);
+                    ViewBag.OrdenarNome = "nome";
+                    ViewBag.OrdenarSobrenome = "categoria";
+                    ViewBag.OrdenarUsuario = "usuario";
+                }
+                else if (ordenar == "categoria")
+                {
+                    catalogos = catalogos.OrderBy(a => a.Categoria);
+                    ViewBag.OrdenarSobrenome = "categoria_desc";
+                    ViewBag.OrdenarNome = "nome";
+                    ViewBag.OrdenarUsuario = "usuario";
+                }
+                else if (ordenar == "categoria_desc")
+                {
+                    catalogos = catalogos.OrderByDescending(a => a.Categoria);
+                    ViewBag.OrdenarSobrenome = "categoria";
+                    ViewBag.OrdenarNome = "nome";
+                    ViewBag.OrdenarUsuario = "usuario";
+                }
+                else if (ordenar == "usuario")
+                {
+                    catalogos = catalogos.OrderBy(a => a.Usuario.Nome);
+                    ViewBag.OrdenarUsuario = "usuario_desc";
+                    ViewBag.OrdenarSobrenome = "categoria";
+                    ViewBag.OrdenarNome = "nome";
+                }
+                else if (ordenar == "usuario_desc")
+                {
+                    catalogos = catalogos.OrderByDescending(a => a.Usuario.Nome);
+                    ViewBag.OrdenarUsuario = "usuario";
+                    ViewBag.OrdenarSobrenome = "categoria";
+                    ViewBag.OrdenarNome = "nome";
+                }
+            }
+            //ViewBag.Filtro = nome;
+            return View(catalogos.ToList());
         }
 
         // GET: Catalogos/Details/5
@@ -64,9 +139,11 @@ namespace TecWebProject.Controllers
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
+
             if (ModelState.IsValid)
             {
-                catalogo.Usuario = (Usuario)Session["User"];
+                Usuario u = (Usuario)Session["User"];
+                catalogo.Usuario = db.Usuarios.Find(u.Id);
                 db.Catalogos.Add(catalogo);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -78,15 +155,13 @@ namespace TecWebProject.Controllers
         // GET: Catalogos/Edit/5
         public ActionResult Edit(int? id)
         {
-            var c = (from u in db.Catalogos
-                           where u.Id == id
-                           select u).FirstOrDefault();
+            Catalogo catalogo = db.Catalogos.Find(id);
             Usuario usu = (Usuario)Session["User"];
             if (Session["User"] == null)
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
-            if (usu.Id != c.Usuario.Id)
+            if (usu.Id != catalogo.Usuario.Id)
             {
                 return RedirectToAction("Index", "Catalogos");
             }
@@ -94,7 +169,7 @@ namespace TecWebProject.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Catalogo catalogo = db.Catalogos.Find(id);
+            
             if (catalogo == null)
             {
                 return HttpNotFound();
@@ -125,15 +200,20 @@ namespace TecWebProject.Controllers
         // GET: Catalogos/Delete/5
         public ActionResult Delete(int? id)
         {
+            Catalogo catalogo = db.Catalogos.Find(id);
+            Usuario usu = (Usuario)Session["User"];
             if (Session["User"] == null)
             {
                 return RedirectToAction("LogIn", "Usuarios");
+            }
+            if (usu.Id != catalogo.Usuario.Id)
+            {
+                return RedirectToAction("Index", "Catalogos");
             }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Catalogo catalogo = db.Catalogos.Find(id);
             if (catalogo == null)
             {
                 return HttpNotFound();

@@ -53,6 +53,19 @@ namespace TecWebProject.Controllers
             return View();
         }
 
+        //public List<String> Lista()
+        //{
+        //    var catalogos = new List<String>();
+        //    Usuario u = (Usuario)Session["User"];
+        //    foreach (Catalogo c in db.Catalogos)
+        //    {
+        //        if (u.Id == c.Usuario.Id)
+        //            catalogos.Add(c.Nome);
+        //    }
+
+        //    return catalogos;
+        //}
+
         // POST: Sites/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
