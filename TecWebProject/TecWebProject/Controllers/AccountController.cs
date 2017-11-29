@@ -44,6 +44,11 @@ namespace TecWebProject.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+            if (Session["User"] != null)
+            {
+                Session["User"] = Session["Admin"] = null;
+                return RedirectToAction("Index", "Home");
+            }
             return RedirectToAction("LogIn", "Usuarios");
         }
 

@@ -17,7 +17,12 @@ namespace TecWebProject.Controllers
         // GET: Usuarios
         public ActionResult Index()
         {
-            return View(db.Usuarios.ToList());
+            // gambiarra ?
+            if (Session["Admin"] != null) // logado com admin
+                return View(db.Usuarios.ToList());
+
+            Session["User"] = null; // logoff tentando acessar area do admin
+            return RedirectToAction("LogIn", "Usuarios"); // pagina login ou outra pagina avisando q nao tem direito de acesso
         }
 
         // GET: Usuarios/Details/5
@@ -41,18 +46,31 @@ namespace TecWebProject.Controllers
             return View();
         }
 
-         //POST: Usuarios/Create
-         //To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-         //more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //POST: Usuarios/Create
+        //To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        //more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Nome,Senha,Email")] Usuario usuario)
         {
             if (ModelState.IsValid)
             {
+                bool existente = false;
+                if (GetUsuarioByEmail(usuario.Email) != null)
+                    existente = true;
+
+                if (IsAdmin(usuario))
+                    ModelState.AddModelError(string.Empty, "alguma msg nao pode ser adm");
+                else
+                    ModelState.AddModelError(string.Empty, "alguma msg cadastro existente");
+
+                if (existente)
+                    return View(usuario);
+
+
                 db.Usuarios.Add(usuario);
                 db.SaveChanges();
-                return RedirectToAction("LogIn", "Usuarios");
+                return RedirectToAction("Index", "Home");
             }
             return View(usuario);
         }
@@ -138,17 +156,41 @@ namespace TecWebProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                var usu = (from u in db.Usuarios
-                           where u.Email == email &&
-                           u.Senha == senha
-                           select u).FirstOrDefault();
+                var usu = Logar(email, senha);
+
                 if (usu != null)
                 {
+                    // gambiarra ?             
+                    Session["Admin"] = IsAdmin(usu) ? usu : null;
+
                     Session["User"] = usu;
+
                     return RedirectToAction("Index", "Home");
                 }
             }
             return View();
+        }
+
+
+
+        private bool IsAdmin(Usuario usuario)
+        {
+            return usuario.Email == "admin@admin.com" && usuario.Nome == "admin" && usuario.Senha == "admin";
+        }
+
+        private Usuario Logar(string email, string senha)
+        {
+            return (from u in db.Usuarios
+                    where u.Email == email &&
+                    u.Senha == senha
+                    select u).FirstOrDefault();
+        }
+
+        private Usuario GetUsuarioByEmail(string email)
+        {
+            return (from u in db.Usuarios
+                    where u.Email == email
+                    select u).FirstOrDefault();
         }
     }
 }
