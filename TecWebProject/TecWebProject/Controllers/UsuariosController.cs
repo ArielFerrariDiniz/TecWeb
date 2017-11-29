@@ -14,6 +14,9 @@ namespace TecWebProject.Controllers
     {
         private FilmesDbContext db = new FilmesDbContext();
 
+        private string msgAdmin = "alguma msg nao pode ser admin";
+        private string msgExistente = "Email existente";
+
         // GET: Usuarios
         public ActionResult Index()
         {
@@ -60,9 +63,9 @@ namespace TecWebProject.Controllers
                     existente = true;
 
                 if (IsAdmin(usuario))
-                    ModelState.AddModelError(string.Empty, "alguma msg nao pode ser adm");
+                    ModelState.AddModelError(string.Empty, msgAdmin);
                 else
-                    ModelState.AddModelError(string.Empty, "alguma msg cadastro existente");
+                    ModelState.AddModelError(string.Empty, msgExistente);
 
                 if (existente)
                     return View(usuario);
@@ -99,7 +102,27 @@ namespace TecWebProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(usuario).State = EntityState.Modified;
+                bool existente = false;
+                Usuario uModificado = GetUsuarioById(usuario.Id);
+                Usuario uExistente = GetUsuarioByEmail(usuario.Email);
+                Usuario uLogado = (Usuario)Session["User"];
+
+                uModificado.Nome = usuario.Nome;
+                uModificado.Email = usuario.Email;
+                uModificado.Senha = usuario.Senha;
+
+                if (uExistente != null && uLogado.Id != uExistente.Id)
+                    existente = true;
+
+                if (IsAdmin(usuario) && Session["Admin"] == null)
+                    ModelState.AddModelError(string.Empty, msgAdmin);
+                else if (existente)
+                    ModelState.AddModelError(string.Empty, msgExistente);
+
+                if (existente)
+                    return View(usuario);
+
+                db.Entry(uModificado).State = EntityState.Modified;      
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -192,5 +215,13 @@ namespace TecWebProject.Controllers
                     where u.Email == email
                     select u).FirstOrDefault();
         }
+
+        private Usuario GetUsuarioById(int id)
+        {
+            return (from u in db.Usuarios
+                    where u.Id == id
+                    select u).FirstOrDefault();
+        }
+
     }
 }
