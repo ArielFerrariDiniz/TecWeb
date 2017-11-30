@@ -161,7 +161,9 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CatalogosController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SC_Metodos.cs" />
     <Compile Include="Controllers\SitesController.cs" />
+    <Compile Include="Controllers\UC_Metodos.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -245,6 +247,7 @@
     <Content Include="Views\Sites\Edit.cshtml" />
     <Content Include="Views\Sites\Index.cshtml" />
     <Content Include="Views\Usuarios\LogIn.cshtml" />
+    <Content Include="Views\Sites\AddToCatalog.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

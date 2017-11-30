@@ -10,7 +10,7 @@ using TecWebProject.Models;
 
 namespace TecWebProject.Controllers
 {
-    public class UsuariosController : Controller
+    public partial class UsuariosController : Controller
     {
         private FilmesDbContext db = new FilmesDbContext();
 
@@ -58,16 +58,19 @@ namespace TecWebProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                bool existente = false;
+                bool invalido = false;
                 if (GetUsuarioByEmail(usuario.Email) != null)
-                    existente = true;
+                    invalido = true;
 
-                if (IsAdmin(usuario))
+                if (Invalido(usuario))
+                {
+                    invalido = true;
                     ModelState.AddModelError(string.Empty, msgAdmin);
+                }
                 else
                     ModelState.AddModelError(string.Empty, msgExistente);
 
-                if (existente)
+                if (invalido)
                     return View(usuario);
 
 
@@ -90,6 +93,7 @@ namespace TecWebProject.Controllers
             {
                 return HttpNotFound();
             }
+
             return View(usuario);
         }
 
@@ -102,8 +106,8 @@ namespace TecWebProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                bool existente = false;
-                Usuario uModificado = GetUsuarioById(usuario.Id);
+                bool invalido = false;
+                Usuario uModificado = db.Usuarios.Find(usuario.Id);
                 Usuario uExistente = GetUsuarioByEmail(usuario.Email);
                 Usuario uLogado = (Usuario)Session["User"];
 
@@ -112,17 +116,20 @@ namespace TecWebProject.Controllers
                 uModificado.Senha = usuario.Senha;
 
                 if (uExistente != null && uLogado.Id != uExistente.Id)
-                    existente = true;
+                    invalido = true;
 
-                if (IsAdmin(usuario) && Session["Admin"] == null)
+                if (Invalido(usuario) && Session["Admin"] == null)
+                {
+                    invalido = true;
                     ModelState.AddModelError(string.Empty, msgAdmin);
-                else if (existente)
+                }
+                else if (invalido)
                     ModelState.AddModelError(string.Empty, msgExistente);
 
-                if (existente)
+                if (invalido)
                     return View(usuario);
 
-                db.Entry(uModificado).State = EntityState.Modified;      
+                db.Entry(uModificado).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -194,34 +201,6 @@ namespace TecWebProject.Controllers
             return View();
         }
 
-
-
-        private bool IsAdmin(Usuario usuario)
-        {
-            return usuario.Email == "admin@admin.com" && usuario.Nome == "admin" && usuario.Senha == "admin";
-        }
-
-        private Usuario Logar(string email, string senha)
-        {
-            return (from u in db.Usuarios
-                    where u.Email == email &&
-                    u.Senha == senha
-                    select u).FirstOrDefault();
-        }
-
-        private Usuario GetUsuarioByEmail(string email)
-        {
-            return (from u in db.Usuarios
-                    where u.Email == email
-                    select u).FirstOrDefault();
-        }
-
-        private Usuario GetUsuarioById(int id)
-        {
-            return (from u in db.Usuarios
-                    where u.Id == id
-                    select u).FirstOrDefault();
-        }
 
     }
 }

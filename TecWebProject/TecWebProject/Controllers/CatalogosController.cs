@@ -17,7 +17,7 @@ namespace TecWebProject.Controllers
         // GET: Catalogos
         public ActionResult Index(string nome, string categoria, string usuario, string ordenar)
         {
-            if (Session["User"] == null)
+            if(!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios" );
             }
@@ -102,7 +102,7 @@ namespace TecWebProject.Controllers
         // GET: Catalogos/Details/5
         public ActionResult Details(int? id)
         {
-            if (Session["User"] == null)
+            if(!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -121,7 +121,7 @@ namespace TecWebProject.Controllers
         // GET: Catalogos/Create
         public ActionResult Create()
         {
-            if (Session["User"] == null)
+            if(!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -135,7 +135,7 @@ namespace TecWebProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Nome,Categoria")] Catalogo catalogo)
         {
-            if (Session["User"] == null)
+            if(!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -157,7 +157,7 @@ namespace TecWebProject.Controllers
         {
             Catalogo catalogo = db.Catalogos.Find(id);
             Usuario usu = (Usuario)Session["User"];
-            if (Session["User"] == null)
+            if(!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -184,7 +184,7 @@ namespace TecWebProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Nome,Categoria")] Catalogo catalogo)
         {
-            if (Session["User"] == null)
+            if(!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -202,7 +202,7 @@ namespace TecWebProject.Controllers
         {
             Catalogo catalogo = db.Catalogos.Find(id);
             Usuario usu = (Usuario)Session["User"];
-            if (Session["User"] == null)
+            if(!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -226,7 +226,7 @@ namespace TecWebProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            if (Session["User"] == null)
+            if(!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios" );
             }
@@ -243,6 +243,10 @@ namespace TecWebProject.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private bool IsLogado() {
+            return Session["User"] != null;
         }
     }
 }

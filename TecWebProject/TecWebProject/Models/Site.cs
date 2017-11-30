@@ -10,13 +10,11 @@ namespace TecWebProject.Models
         public int Id { get; set; }
         public string Nome { get; set; }
 
-        public enum caracteristica {Gratuito, Pago}
+        public enum TipoAcesso {Gratuito, Pago}
 
-        public caracteristica Acesso { get; set; }
+        public TipoAcesso Acesso { get; set; }
 
         public string Link { get; set; }
-
-        public List<Catalogo> Catalogos = new List<Catalogo>();
-
+  
     }
 }

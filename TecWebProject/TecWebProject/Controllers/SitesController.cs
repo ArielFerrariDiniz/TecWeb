@@ -10,14 +10,14 @@ using TecWebProject.Models;
 
 namespace TecWebProject.Controllers
 {
-    public class SitesController : Controller
+    public partial class SitesController : Controller
     {
         private FilmesDbContext db = new FilmesDbContext();
 
         // GET: Sites
         public ActionResult Index()
         {
-            if (Session["User"] == null)
+            if(!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -27,7 +27,7 @@ namespace TecWebProject.Controllers
         // GET: Sites/Details/5
         public ActionResult Details(int? id)
         {
-            if (Session["User"] == null)
+            if(!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -46,25 +46,14 @@ namespace TecWebProject.Controllers
         // GET: Sites/Create
         public ActionResult Create()
         {
-            if (Session["User"] == null)
+            if(!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
             return View();
         }
 
-        //public List<String> Lista()
-        //{
-        //    var catalogos = new List<String>();
-        //    Usuario u = (Usuario)Session["User"];
-        //    foreach (Catalogo c in db.Catalogos)
-        //    {
-        //        if (u.Id == c.Usuario.Id)
-        //            catalogos.Add(c.Nome);
-        //    }
-
-        //    return catalogos;
-        //}
+     
 
         // POST: Sites/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -73,7 +62,7 @@ namespace TecWebProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Nome,Acesso,Link")] Site site)
         {
-            if (Session["User"] == null)
+            if(!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -90,7 +79,7 @@ namespace TecWebProject.Controllers
         // GET: Sites/Edit/5
         public ActionResult Edit(int? id)
         {
-            if (Session["User"] == null)
+            if(!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -113,7 +102,7 @@ namespace TecWebProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Nome,Acesso,Link")] Site site)
         {
-            if (Session["User"] == null)
+            if(!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -129,7 +118,7 @@ namespace TecWebProject.Controllers
         // GET: Sites/Delete/5
         public ActionResult Delete(int? id)
         {
-            if (Session["User"] == null)
+            if(!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -150,7 +139,7 @@ namespace TecWebProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            if (Session["User"] == null)
+            if(!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -168,5 +157,7 @@ namespace TecWebProject.Controllers
             }
             base.Dispose(disposing);
         }
+
+     
     }
 }
