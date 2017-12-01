@@ -92,7 +92,15 @@ namespace TecWebProject.Controllers
                 }
             }
             //ViewBag.Filtro = nome;
-            return View(catalogos.ToList());
+            if (!IsLogado())
+                return View(catalogos.ToList());
+            else {
+                Usuario user = (Usuario)Session["User"];
+                var cats = (from u in db.Usuarios.Include("Catalogos")
+                            where u.Id == user.Id
+                        select u).FirstOrDefault().Catalogos;
+                return View(cats);
+            }
         }
 
         // GET: Catalogos/Details/5
