@@ -17,17 +17,48 @@ namespace TecWebProject.Controllers
         // GET: Sites
         public ActionResult Index()
         {
-            if(!IsLogado())
+            if (!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
-            return View(db.Sites.ToList());
+
+            Usuario u = GetUsuarioLogado();
+
+            u = GetUsuarioCatalogos(u);
+
+            List<Site> sites = new List<Site>();
+            var catalogos = new List<Catalogo>();
+            
+            foreach (Catalogo cat in u.Catalogos){
+                Catalogo c = GetCatalogoSites(cat);
+                catalogos.Add(c);
+                sites.AddRange(c.Sites);
+            }
+
+            var catalogosCmp = new List<Catalogo>();
+            foreach (Catalogo cat in catalogos)
+            {
+                var list = sites.Except(cat.Sites).ToList();
+                if (list.Count == 0)
+                    catalogosCmp.Add(cat);
+            }
+
+            if (catalogosCmp.Count != catalogos.Count)
+                sites.Clear();
+     
+
+            ModelSites sc = new ModelSites();
+
+            sc.Sites = db.Sites.ToList();
+            sc.SitesCatalogos = sites;
+
+            return View(sc);
         }
 
         // GET: Sites/Details/5
         public ActionResult Details(int? id)
         {
-            if(!IsLogado())
+            if (!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -46,30 +77,46 @@ namespace TecWebProject.Controllers
         // GET: Sites/Create
         public ActionResult Create()
         {
-            if(!IsLogado())
+            if (!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
+
+            ViewBagCatalogos();
+            var tst = ViewBag.Catalogos;
             return View();
         }
 
-     
+
 
         // POST: Sites/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Nome,Acesso,Link")] Site site)
+        public ActionResult Create([Bind(Include = "Id,Nome,Acesso,Link,Catalogo")] Site site)
         {
-            if(!IsLogado())
+            if (!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
             if (ModelState.IsValid)
             {
-                db.Sites.Add(site);
+                Site st = GetSiteByLink(site.Link);
+
+                Catalogo cat = GetCatalogoSites(site.Catalogo);
+
+                if (st == null)
+                {
+                    db.Sites.Add(site);
+                    st = site;
+                    st.Catalogos = new List<Catalogo>();
+                }
+                st.Catalogos.Add(cat);
+                cat.Sites.Add(st);
+
                 db.SaveChanges();
+
                 return RedirectToAction("Index");
             }
 
@@ -79,7 +126,7 @@ namespace TecWebProject.Controllers
         // GET: Sites/Edit/5
         public ActionResult Edit(int? id)
         {
-            if(!IsLogado())
+            if (!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -102,7 +149,7 @@ namespace TecWebProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Nome,Acesso,Link")] Site site)
         {
-            if(!IsLogado())
+            if (!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -118,7 +165,7 @@ namespace TecWebProject.Controllers
         // GET: Sites/Delete/5
         public ActionResult Delete(int? id)
         {
-            if(!IsLogado())
+            if (!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -139,7 +186,7 @@ namespace TecWebProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            if(!IsLogado())
+            if (!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -158,6 +205,6 @@ namespace TecWebProject.Controllers
             base.Dispose(disposing);
         }
 
-     
+
     }
 }

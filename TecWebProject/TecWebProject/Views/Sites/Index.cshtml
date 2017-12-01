@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TecWebProject.Models.Site>
+﻿@model TecWebProject.Models.ModelSites
     @{
         ViewBag.Title = "Index";
     }
@@ -11,13 +11,13 @@
     <table class="table">
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nome)
+                @Html.DisplayNameFor(model => model.Site.Nome)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Acesso)
+                @Html.DisplayNameFor(model => model.Site.Acesso)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Link)
+                @Html.DisplayNameFor(model => model.Site.Link)
             </th>
             @if (Session["Admin"] != null)
             {
@@ -27,7 +27,7 @@
             <th></th>
         </tr>
 
-        @foreach (var item in Model)
+        @foreach (var item in Model.Sites)
         {
             <tr>
                 <td>
@@ -47,11 +47,16 @@
                     </td>
                 }
 
-                @if (Session["User"] != null) { 
+                @if (Session["User"] != null && !Model.SitesCatalogos.Contains(item))
+                { 
                 <td>
-                    @Html.ActionLink("Add to Catalog", "AddToCatalog")
+                    @Html.ActionLink("Add to Catalog", "AddToCatalog", new { id = item.Id })
                     @*testando*@
                 </td>
+                }
+                else
+                {
+                    <td></td>
                 }
                 <td>
                     @Html.ActionLink("Details", "Details", new { id = item.Id })

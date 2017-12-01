@@ -59,10 +59,11 @@ namespace TecWebProject.Controllers
             if (ModelState.IsValid)
             {
                 bool invalido = false;
-                if (GetUsuarioByEmail(usuario.Email) != null)
+                Usuario u =  GetUsuarioByEmail(usuario.Email);
+                if (u != null)
                     invalido = true;
 
-                if (Invalido(usuario))
+                if (u != null && Invalido(usuario) )
                 {
                     invalido = true;
                     ModelState.AddModelError(string.Empty, msgAdmin);

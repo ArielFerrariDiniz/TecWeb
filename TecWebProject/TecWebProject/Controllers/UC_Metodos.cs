@@ -8,6 +8,10 @@ namespace TecWebProject.Controllers
 {
     public partial class UsuariosController
     {
+        private bool IsLogado()
+        {
+            return Session["User"] != null;
+        }
         private bool Invalido(Usuario usuario) {
             return usuario.Email == "admin@admin.com" || usuario.Nome == "admin";
         }

@@ -230,7 +230,21 @@ namespace TecWebProject.Controllers
             {
                 return RedirectToAction("LogIn", "Usuarios" );
             }
-            Catalogo catalogo = db.Catalogos.Find(id);
+            Catalogo catalogo = (from c in db.Catalogos.Include("Sites")
+                                 where c.Id == id
+                                 select c).FirstOrDefault();
+
+            var removerSites = new List<Site>();
+            foreach(Site site in catalogo.Sites){
+                Site st = (from s in db.Sites.Include("Catalogos")
+                    where s.Id == site.Id
+                    select s).FirstOrDefault();
+                st.Catalogos.Remove(catalogo);
+                if (st.Catalogos.Count == 0)
+                    removerSites.Add(st);
+
+            }
+            db.Sites.RemoveRange(removerSites);
             db.Catalogos.Remove(catalogo);
             db.SaveChanges();
             return RedirectToAction("Index");

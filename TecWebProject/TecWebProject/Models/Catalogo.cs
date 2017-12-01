@@ -12,6 +12,6 @@ namespace TecWebProject.Models
         public string Categoria { get; set; }
         public virtual Usuario Usuario { get; set; }
 
-        public List<Site> Sites = new List<Site>();
+        public List<Site> Sites { get; set; }
     }
 }
