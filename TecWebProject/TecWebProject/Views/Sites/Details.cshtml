@@ -35,6 +35,40 @@
         </dd>
 
     </dl>
+
+
+
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Site.Catalogo.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Site.Catalogo.Categoria)
+            </th>
+            
+        </tr>
+
+        @foreach (var item in Model.Site.Catalogos)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Categoria)
+                </td>             
+
+            </tr>
+        }
+
+    </table>
+
+
+
+
+
 </div>
 @if (Model.UserSites.Contains(Model.Site))
 {

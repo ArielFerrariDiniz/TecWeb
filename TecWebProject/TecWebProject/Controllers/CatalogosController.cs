@@ -106,10 +106,7 @@ namespace TecWebProject.Controllers
         // GET: Catalogos/Details/5
         public ActionResult Details(int? id)
         {
-            if (!IsLogado())
-            {
-                return RedirectToAction("LogIn", "Usuarios");
-            }
+            
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -119,6 +116,11 @@ namespace TecWebProject.Controllers
             {
                 return HttpNotFound();
             }
+
+            catalogo = (from c in db.Catalogos.Include("Sites")
+                        where c.Id == catalogo.Id
+                        select c).FirstOrDefault();
+
             return View(catalogo);
         }
 

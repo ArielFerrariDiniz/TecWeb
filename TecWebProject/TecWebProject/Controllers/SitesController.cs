@@ -80,6 +80,7 @@ namespace TecWebProject.Controllers
             ModelSites sc = new ModelSites();
             List<Site> sites = new List<Site>();
 
+            site = GetSiteByIdCatalogos(site.Id);
             if (IsLogado())
             {
                 usuario = GetUsuarioCatalogos(usuario);

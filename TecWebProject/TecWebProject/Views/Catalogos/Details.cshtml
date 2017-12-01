@@ -28,7 +28,52 @@
 
     </dl>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Site.Nome)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Site.Acesso)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Site.Link)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.Sites)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Acesso)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Link)
+            </td>
+    
+        </tr>
+    }
+
+</table>
+
+
+
+@if (Session["User"] != null)
+{
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}
+else
+{
+    <p>
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}
