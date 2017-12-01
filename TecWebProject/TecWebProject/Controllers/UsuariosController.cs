@@ -14,7 +14,7 @@ namespace TecWebProject.Controllers
     {
         private FilmesDbContext db = new FilmesDbContext();
 
-        private string msgAdmin = "alguma msg nao pode ser admin";
+        private string msgAdmin = "já existe um admin cadastrado";
         private string msgExistente = "Email existente";
 
         // GET: Usuarios
