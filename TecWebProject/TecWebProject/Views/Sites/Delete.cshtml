@@ -1,4 +1,4 @@
-﻿@model TecWebProject.Models.ModelSites
+﻿@model TecWebProject.Models.Site
 
 @{
     ViewBag.Title = "Delete";
@@ -7,51 +7,54 @@
 <h2>Delete</h2>
 
 <h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Site</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Site.Nome)
-        </dt>
+@using (Html.BeginForm())
+{
 
-        <dd>
-            @Html.DisplayFor(model => model.Site.Nome)
-        </dd>
+    @Html.AntiForgeryToken()
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Site.Acesso)
-        </dt>
+    <div>
+        <h4>Site</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Nome)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Site.Acesso)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Nome)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Site.Link)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.Acesso)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Site.Link)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Acesso)
+            </dd>
 
-        <dt>
-            @Html.LabelFor(model => model.Site.Catalogo)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.Link)
+            </dt>
 
-        <dd>
-            @Html.DropDownListFor(model => model.Site.Catalogo.Id, (IEnumerable<SelectListItem>)ViewBag.Catalogos, null, new { @class = "form-control" })
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Link)
+            </dd>
 
-    </dl>
+            <dt>
+                @Html.LabelFor(model => model.Catalogo)
+            </dt>
 
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
+            <dd>
+                @Html.DropDownListFor(model => model.Catalogo.Id, (IEnumerable<SelectListItem>)ViewBag.Catalogos, null, new { @class = "form-control" })
+            </dd>
+
+        </dl>
+
 
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" /> |
             @Html.ActionLink("Back to List", "Index")
         </div>
-    }
-</div>
+  
+    </div>
+}

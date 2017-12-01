@@ -187,31 +187,17 @@ namespace TecWebProject.Controllers
         }
 
         // GET: Sites/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete([Bind(Include = "Id,Nome,Link,Acesso,Catalogo")]Site site)
         {
             if (!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
 
-            ModelSites ms = new ModelSites();
-            Usuario usu = GetUsuarioLogado();            
-            Site site = db.Sites.Find(id);
-            ms.Site = site;
-            ms.Usuario = GetUsuarioCatalogos(usu);
-          
-            if (site == null)
-            {
-                return HttpNotFound();
-            }
-
+            site = db.Sites.Find(site.Id);
             ViewBagCatalogosComSite(site);
 
-            return View(ms);
+            return View(site);
         }
 
         // POST: Sites/Delete/5
@@ -224,13 +210,13 @@ namespace TecWebProject.Controllers
                 return RedirectToAction("LogIn", "Usuarios");
             }
 
-            //Catalogo cat = GetCatalogoSites(site.Catalogo);
-            //site = GetSiteByIdCatalogos(site.Id);
+            Catalogo cat = GetCatalogoSites(site.Catalogo);
+            site = GetSiteByIdCatalogos(site.Id);
 
-            //cat.Sites.Remove(site);
-            //site.Catalogos.Remove(cat);
+            cat.Sites.Remove(site);
+            site.Catalogos.Remove(cat);
 
-            //db.SaveChanges();
+            db.SaveChanges();
             return RedirectToAction("Index");
         }
 
