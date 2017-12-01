@@ -49,21 +49,21 @@
             }
             else
             {
-                if (Model.Usuario != null && (!Model.SitesCatalogos.Contains(item) || item.Catalogos.Count == 0))
+                if (Model.Usuario != null && !Model.SitesCatalogos.Contains(item))
                 {
                     <td>
                         @Html.ActionLink("Add to Catalog", "AddToCatalog", new { id = item.Id }) |
                         @Html.ActionLink("Details", "Details", new { id = item.Id })
                     </td>
                 }
-                @*else if (Model.Usuario != null && Model.UserSites.Contains(item) && Model.SitesCatalogos.Contains(item))
+                else if (Model.Usuario != null && Model.SitesCatalogos.Contains(item))
                 {
                     <td>
                         @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                         @Html.ActionLink("Delete", "Delete", new { id = item.Id }) |
                         @Html.ActionLink("Details", "Details", new { id = item.Id })
                     </td>
-                }*@
+                }
                 else
                 {
                     <td>

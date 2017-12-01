@@ -59,6 +59,8 @@ namespace TecWebProject.Controllers
             if (catalogosCmp.Count != catalogos.Count)
                 sites.Clear();
 
+            if (catalogosCmp.Count == catalogos.Count)
+                userSites.Clear();
 
 
             return View(sc);
@@ -207,7 +209,7 @@ namespace TecWebProject.Controllers
                 return HttpNotFound();
             }
 
-            ViewBagCatalogos(site);
+            ViewBagCatalogosComSite(site);
 
             return View(ms);
         }
@@ -222,13 +224,13 @@ namespace TecWebProject.Controllers
                 return RedirectToAction("LogIn", "Usuarios");
             }
 
-            Catalogo cat = GetCatalogoSites(site.Catalogo);
-            site = GetSiteByIdCatalogos(site.Id);
+            //Catalogo cat = GetCatalogoSites(site.Catalogo);
+            //site = GetSiteByIdCatalogos(site.Id);
 
-            cat.Sites.Remove(site);
-            site.Catalogos.Remove(cat);
+            //cat.Sites.Remove(site);
+            //site.Catalogos.Remove(cat);
 
-            db.SaveChanges();
+            //db.SaveChanges();
             return RedirectToAction("Index");
         }
 

@@ -81,6 +81,27 @@ namespace TecWebProject.Controllers
 
         }
 
+        private void ViewBagCatalogosComSite(Site site)
+        {
+            if (!IsLogado())
+                return;
+            var us = GetUsuarioLogado();
+
+            us = GetUsuarioCatalogos(us);
+
+            var catalogos = new List<Catalogo>();
+
+            foreach (Catalogo cat in us.Catalogos)
+            {
+                Catalogo c = GetCatalogoSites(cat);
+                if (c.Sites.Contains(site))
+                    catalogos.Add(c);
+            }
+
+            ViewBag.Catalogos = new SelectList(catalogos, "Id", "Nome");
+
+        }
+
 
         private Site GetSiteByLink(string link)
         {
