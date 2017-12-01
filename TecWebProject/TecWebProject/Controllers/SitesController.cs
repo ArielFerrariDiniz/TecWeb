@@ -17,22 +17,35 @@ namespace TecWebProject.Controllers
         // GET: Sites
         public ActionResult Index()
         {
+            ModelSites sc = new ModelSites();
+            List<Site> sites = new List<Site>();
+            List<Site> userSites = new List<Site>();
+            Usuario u = GetUsuarioLogado();
+
+
+            sc.Usuario = u;
+            sc.Sites = db.Sites.ToList();
+            sc.SitesCatalogos = sites;
+            sc.UserSites = userSites;
+
+
             if (!IsLogado())
             {
-                return RedirectToAction("LogIn", "Usuarios");
+                return View(sc);
+                //return RedirectToAction("LogIn", "Usuarios");
             }
-
-            Usuario u = GetUsuarioLogado();
 
             u = GetUsuarioCatalogos(u);
 
-            List<Site> sites = new List<Site>();
+
             var catalogos = new List<Catalogo>();
-            
-            foreach (Catalogo cat in u.Catalogos){
+
+            foreach (Catalogo cat in u.Catalogos)
+            {
                 Catalogo c = GetCatalogoSites(cat);
                 catalogos.Add(c);
                 sites.AddRange(c.Sites);
+                userSites.AddRange(c.Sites);
             }
 
             var catalogosCmp = new List<Catalogo>();
@@ -45,12 +58,8 @@ namespace TecWebProject.Controllers
 
             if (catalogosCmp.Count != catalogos.Count)
                 sites.Clear();
-     
 
-            ModelSites sc = new ModelSites();
 
-            sc.Sites = db.Sites.ToList();
-            sc.SitesCatalogos = sites;
 
             return View(sc);
         }
@@ -58,20 +67,33 @@ namespace TecWebProject.Controllers
         // GET: Sites/Details/5
         public ActionResult Details(int? id)
         {
-            if (!IsLogado())
-            {
-                return RedirectToAction("LogIn", "Usuarios");
-            }
+
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Site site = db.Sites.Find(id);
+            Usuario usuario = GetUsuarioLogado();
+            ModelSites sc = new ModelSites();
+            List<Site> sites = new List<Site>();
+
+            if (IsLogado())
+            {
+                usuario = GetUsuarioCatalogos(usuario);
+                foreach (Catalogo cat in usuario.Catalogos)
+                    sites.AddRange(GetCatalogoSites(cat).Sites);
+            }
+
+            sc.UserSites = sites;
+            sc.Usuario = usuario;
+            sc.Site = site;
+
             if (site == null)
             {
                 return HttpNotFound();
             }
-            return View(site);
+            return View(sc);
         }
 
         // GET: Sites/Create
@@ -173,25 +195,39 @@ namespace TecWebProject.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
+            ModelSites ms = new ModelSites();
+            Usuario usu = GetUsuarioLogado();            
             Site site = db.Sites.Find(id);
+            ms.Site = site;
+            ms.Usuario = GetUsuarioCatalogos(usu);
+          
             if (site == null)
             {
                 return HttpNotFound();
             }
-            return View(site);
+
+            ViewBagCatalogos(site);
+
+            return View(ms);
         }
 
         // POST: Sites/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed([Bind(Include = "Id,Nome,Acesso,Link,Catalogo")] Site site)
         {
             if (!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
-            Site site = db.Sites.Find(id);
-            db.Sites.Remove(site);
+
+            Catalogo cat = GetCatalogoSites(site.Catalogo);
+            site = GetSiteByIdCatalogos(site.Id);
+
+            cat.Sites.Remove(site);
+            site.Catalogos.Remove(cat);
+
             db.SaveChanges();
             return RedirectToAction("Index");
         }

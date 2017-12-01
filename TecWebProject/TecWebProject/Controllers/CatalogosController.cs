@@ -17,31 +17,27 @@ namespace TecWebProject.Controllers
         // GET: Catalogos
         public ActionResult Index(string nome, string categoria, string usuario, string ordenar)
         {
-            if(!IsLogado())
-            {
-                return RedirectToAction("LogIn", "Usuarios" );
-            }
-            var catalogos = from c in db.Catalogos
+            var catalogos = from c in db.Catalogos.Include("Sites")
                             select c;
             if (nome != null && nome != "")
             {
-                catalogos = from c in db.Catalogos
-                                where c.Nome.Contains(nome)
-                                select c;
+                catalogos = from c in db.Catalogos.Include("Sites")
+                            where c.Nome.Contains(nome)
+                            select c;
                 ViewBag.Filtro = nome;
             }
             else if (categoria != null && categoria != "")
             {
-                catalogos = from c in db.Catalogos
-                                where c.Categoria.Contains(categoria)
-                                select c;
+                catalogos = from c in db.Catalogos.Include("Sites")
+                            where c.Categoria.Contains(categoria)
+                            select c;
                 ViewBag.Filtro = categoria;
             }
             else if (usuario != null && usuario != "")
             {
-                catalogos = from c in db.Catalogos
-                                where c.Usuario.Nome.Contains(usuario)
-                                select c;
+                catalogos = from c in db.Catalogos.Include("Sites")
+                            where c.Usuario.Nome.Contains(usuario)
+                            select c;
                 ViewBag.Filtro = usuario;
             }
             if (String.IsNullOrEmpty(ordenar))
@@ -102,7 +98,7 @@ namespace TecWebProject.Controllers
         // GET: Catalogos/Details/5
         public ActionResult Details(int? id)
         {
-            if(!IsLogado())
+            if (!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -121,7 +117,7 @@ namespace TecWebProject.Controllers
         // GET: Catalogos/Create
         public ActionResult Create()
         {
-            if(!IsLogado())
+            if (!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -135,7 +131,7 @@ namespace TecWebProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Nome,Categoria")] Catalogo catalogo)
         {
-            if(!IsLogado())
+            if (!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -157,7 +153,7 @@ namespace TecWebProject.Controllers
         {
             Catalogo catalogo = db.Catalogos.Find(id);
             Usuario usu = (Usuario)Session["User"];
-            if(!IsLogado())
+            if (!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -169,7 +165,7 @@ namespace TecWebProject.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            
+
             if (catalogo == null)
             {
                 return HttpNotFound();
@@ -184,7 +180,7 @@ namespace TecWebProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Nome,Categoria")] Catalogo catalogo)
         {
-            if(!IsLogado())
+            if (!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -202,7 +198,7 @@ namespace TecWebProject.Controllers
         {
             Catalogo catalogo = db.Catalogos.Find(id);
             Usuario usu = (Usuario)Session["User"];
-            if(!IsLogado())
+            if (!IsLogado())
             {
                 return RedirectToAction("LogIn", "Usuarios");
             }
@@ -226,19 +222,20 @@ namespace TecWebProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            if(!IsLogado())
+            if (!IsLogado())
             {
-                return RedirectToAction("LogIn", "Usuarios" );
+                return RedirectToAction("LogIn", "Usuarios");
             }
             Catalogo catalogo = (from c in db.Catalogos.Include("Sites")
                                  where c.Id == id
                                  select c).FirstOrDefault();
 
             var removerSites = new List<Site>();
-            foreach(Site site in catalogo.Sites){
+            foreach (Site site in catalogo.Sites)
+            {
                 Site st = (from s in db.Sites.Include("Catalogos")
-                    where s.Id == site.Id
-                    select s).FirstOrDefault();
+                           where s.Id == site.Id
+                           select s).FirstOrDefault();
                 st.Catalogos.Remove(catalogo);
                 if (st.Catalogos.Count == 0)
                     removerSites.Add(st);
@@ -259,7 +256,8 @@ namespace TecWebProject.Controllers
             base.Dispose(disposing);
         }
 
-        private bool IsLogado() {
+        private bool IsLogado()
+        {
             return Session["User"] != null;
         }
     }

@@ -50,12 +50,14 @@
             @Html.DisplayFor(modelItem => item.Usuario.Nome)
         </td>
         <td>
-            @*@Html.DisplayFor(modelItem => item.Sites.Nome)*@
+            @Html.DisplayFor(modelItem => item.Sites.Count)
         </td>
+        @if(Session["User"] != null){
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
             @Html.ActionLink("Delete", "Delete", new { id=item.Id })
         </td>
+        }
     </tr>
 }
 

@@ -1,4 +1,4 @@
-﻿@model TecWebProject.Models.Site
+﻿@model TecWebProject.Models.ModelSites
 
 @{
     ViewBag.Title = "Delete";
@@ -12,32 +12,41 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Nome)
+            @Html.DisplayNameFor(model => model.Site.Nome)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Nome)
+            @Html.DisplayFor(model => model.Site.Nome)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Acesso)
+            @Html.DisplayNameFor(model => model.Site.Acesso)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Acesso)
+            @Html.DisplayFor(model => model.Site.Acesso)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Link)
+            @Html.DisplayNameFor(model => model.Site.Link)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Link)
+            @Html.DisplayFor(model => model.Site.Link)
+        </dd>
+
+        <dt>
+            @Html.LabelFor(model => model.Site.Catalogo)
+        </dt>
+
+        <dd>
+            @Html.DropDownListFor(model => model.Site.Catalogo.Id, (IEnumerable<SelectListItem>)ViewBag.Catalogos, null, new { @class = "form-control" })
         </dd>
 
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
